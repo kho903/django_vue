@@ -8,6 +8,7 @@
             text-align: center;
             background-color: #ddd;
         }
+
         .inputBox {
             margin: auto;
             width: 70%;
@@ -16,6 +17,7 @@
             border-radius: 50px;
             line-height: 50px;
         }
+
         .inputBox .name {
             border-style: none;
             border-bottom: 1px solid #ddd;
@@ -23,6 +25,7 @@
             padding-left: 20px;
             line-height: 20px;
         }
+
         .inputBox .item {
             border-style: none;
             border-bottom: 1px solid #ddd;
@@ -31,11 +34,13 @@
             padding-left: 20px;
             line-height: 20px;
         }
+
         .todoList {
             list-style: none;
             padding: 10px 0;
             text-align: left;
         }
+
         .todoList li {
             display: flex;
             height: 50px;
@@ -45,9 +50,16 @@
             background: white;
             border-radius: 5px;
         }
+
         .removeBtn {
             margin-left: auto;
             font-size: 20px;
+        }
+        .removeBtn:hover {
+            color: red;
+        }
+        .modal-footer a{
+            color: white;
         }
     </style>
 {% endblock %}
@@ -64,7 +76,7 @@
             {% csrf_token %}
             <input class="name" type="text" placeholder="name ..." name="name">
             <input class="item" type="text" placeholder="type anything welcomed ..."
-                name="todo">
+                   name="todo">
             <button type="submit" class="btn btn-info btn-sm">ADD</button>
         </form>
 
@@ -72,10 +84,48 @@
             {% for todo in object_list %}
                 <li>
                     <span>{{ todo.name }} :: {{ todo.todo }}</span>
-                    <span class="removeBtn"><a href="{% url 'todo:delete2' todo.id %}">&#x00D7</a></span>
+                    <span class="removeBtn" data-toggle="modal" data-target="#myModal"
+                          data-id="{{ todo.id }}" data-name="{{ todo.name }}" data-todo="{{ todo.todo }}">
+                        &#x00D7
+                    </span>
                 </li>
             {% endfor %}
         </ul>
+
+        <!-- Modal -->
+        <div class="modal" id="myModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Are you sure to delete ? </h5>
+                    </div>
+                    <div class="modal-body">
+                        body-text
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger btn-sm">
+                            <a href="">Delete</a></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 {% endblock %}
-</html>
+
+{% block extra-script %}
+    <script>
+        $('#myModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);// Button that triggered the modal
+            var id = button.data('id');
+            var name = button.data('name');
+            var todo = button.data('todo');
+
+            // Update the modal's content
+            var modal = $(this);
+            modal.find('.modal-body').text(name + '::: ' + todo);
+            modal.find('.modal-footer a').attr('href', '/todo/' + id + '/delete2/');
+        })
+    </script>
+{% endblock %}
