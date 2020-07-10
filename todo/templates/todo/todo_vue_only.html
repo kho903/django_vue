@@ -1,15 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vue-Django ToDo App</title>
+{% extends 'base.html' %}
 
+{% block title %}todo_vue_only{% endblock %}
+
+{% block extra-style %}
     <style>
         body {
             text-align: center;
             background-color: #ddd;
         }
+
         .inputBox {
             margin: auto;
             width: 70%;
@@ -18,24 +17,30 @@
             border-radius: 50px;
             line-height: 50px;
         }
+
         .inputBox .name {
             border-style: none;
             border-bottom: 1px solid #ddd;
-            width: 70px;
+            width: 90px;
             padding-left: 20px;
+            line-height: 20px;
         }
+
         .inputBox .item {
             border-style: none;
             border-bottom: 1px solid #ddd;
             width: 400px;
             margin-left: 50px;
             padding-left: 20px;
+            line-height: 20px;
         }
+
         .todoList {
             list-style: none;
             padding: 10px 0;
             text-align: left;
         }
+
         .todoList li {
             display: flex;
             height: 50px;
@@ -45,14 +50,16 @@
             background: white;
             border-radius: 5px;
         }
+
         .removeBtn {
             margin-left: auto;
             font-size: 20px;
         }
     </style>
-</head>
+{% endblock %}
 
-<body>
+
+{% block content %}
     <div id='app'>
 
         <h1>My Todo App !</h1>
@@ -62,8 +69,8 @@
         <div class="inputBox">
             <input class="name" type="text" placeholder="name ..." v-model="name">
             <input class="item" type="text" placeholder="type anything welcomed ..."
-                v-model="newTodoItem" v-on:keyup.enter="add_todo()">
-            <button v-on:click="add_todo()">ADD</button>
+                   v-model="newTodoItem" v-on:keyup.enter="add_todo()">
+            <button v-on:click="add_todo()" class="btn btn-primary btn-sm">ADD</button>
         </div>
 
         <ul class="todoList">
@@ -74,11 +81,13 @@
         </ul>
 
     </div>
+{% endblock %}
 
+{% block extra-script %}
     <script src='https://unpkg.com/vue/dist/vue.min.js'></script>
     <script>
         var vm = new Vue({
-            delimiters: ['{','}'],
+            delimiters: ['{', '}'],
             el: '#app',
             data: {
                 name: '',
@@ -91,22 +100,20 @@
                 ],
             },
             methods: {
-                add_todo: function() {
+                add_todo: function () {
                     console.log("add_todo()...");
-                    if (this.name=='') this.name='홍길동';
-                    if (this.newTodoItem == '')return;
+                    if (this.name == '') this.name = '홍길동';
+                    if (this.newTodoItem == '') return;
 
                     this.todoItems.push({name: this.name, item: this.newTodoItem});
                     this.name = ''
-                    this.newTodoItem =''
+                    this.newTodoItem = ''
                 },
-                remove_todo: function(index) {
+                remove_todo: function (index) {
                     console.log("remove_todo()...");
                     this.todoItems.splice(index, 1)
                 },
             },
         })
     </script>
-
-</body>
-</html>
+{% endblock %}
